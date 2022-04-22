@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "682368410753",
+    "project_id": "playquiz-8b2f2",
+    "storage_bucket": "playquiz-8b2f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682368410753:android:158620432c141c2821d980",
+        "android_client_info": {
+          "package_name": "com.playquiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682368410753-s1eu35mjehq8halotrgb4vuji7inbga8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj70oQ_RXy-QZK-s9cr3iBYPktqyD0Mg8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682368410753-s1eu35mjehq8halotrgb4vuji7inbga8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

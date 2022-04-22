@@ -1,9 +1,13 @@
 import React,{useState} from "react";
-import {StyleSheet,StatusBar,Text,View,TextInput,ScrollView,TouchableOpacity, ToastAndroid} from 'react-native';
+import {StyleSheet,StatusBar,Text,View,TextInput,ActivityIndicator,TouchableOpacity, ToastAndroid} from 'react-native';
 import LinearGradient from "react-native-linear-gradient";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as Animatable from 'react-native-animatable';
+import auth from '@react-native-firebase/auth'
+
+
 export default function SignupScreen({navigation}){
+    const [animating,setAnimating] = useState(false);
     const[email,setEmail] = useState('');
     const[passwordVisibility,setPasswordVisibility] = useState(true);
     const[password,setPassword] = useState('');
@@ -21,7 +25,45 @@ export default function SignupScreen({navigation}){
         navigation.navigate('login')
     }
     const register = ()=>{
-        ToastAndroid.show('Register your account Here',ToastAndroid.SHORT);
+        setAnimating(true);
+        let passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+		let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if(passwordRegex.test(password)){
+            if(emailRegex.test(email)){
+                registerUser(email,password);
+            }else{
+                console.log('Please enter valid email id');
+            }
+
+        }else{
+            if(emailRegex.test(email)){
+                if(passwordRegex.test(password)){
+                    registerUser(email,password)
+                }
+            }else{
+                console.log('Please provide valid password.')
+            }
+        }
+        // ToastAndroid.show('Register your account Here',ToastAndroid.SHORT);
+    }
+
+    const registerUser = (emailId,PswdId)=>{
+        auth().createUserWithEmailAndPassword(emailId,PswdId)
+        .then(()=>{
+            ToastAndroid.show('Registration successfully',ToastAndroid.SHORT);
+            setAnimating(false);
+            navigation.replace('login');
+        })
+        .catch(error=>{
+            setAnimating(false);
+            if(error.code==='auth/email-already-in-use'){
+                console.log('Already user exist');
+            }
+            if(error.code==='auth/invalid-email'){
+                console.log('Invalid user');
+            }
+            console.log(error);
+        });
     }
     return(
         <View style={styles.container}>
@@ -90,7 +132,12 @@ export default function SignupScreen({navigation}){
                </TouchableOpacity>
            </View>
          </Animatable.View>
-        
+        <ActivityIndicator
+        animating={animating}
+        color='white'
+        size='large'
+        style={styles.activityIndicator}
+        />
         </View>
         
     );
@@ -156,5 +203,9 @@ const styles = StyleSheet.create({
         color:'#009387',
         fontWeight:'bold',
         fontSize:20
+    },
+    activityIndicator:{
+        alignItems:'center',
+        height:80,
     }
 });

@@ -1,12 +1,14 @@
 import React,{useState} from "react";
-import {StatusBar,StyleSheet,Text,View,TextInput,TouchableOpacity,ScrollView, FlatList, ToastAndroid} from 'react-native';
+import {StatusBar,ActivityIndicator,StyleSheet,Text,View,TextInput,TouchableOpacity,ScrollView, FlatList, ToastAndroid} from 'react-native';
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import LinearGradient from "react-native-linear-gradient";
 import * as Animatable from 'react-native-animatable';
+import auth from '@react-native-firebase/auth';
 
 
 export default function LoginScreen({navigation}){
-    const[userName,setUserName] = useState('');
+    const [animating,setAnimating] =useState(false);
+    const[email,setUserName] = useState('');
     const[password,setPassword] = useState('');
     const [passwordVisibility,setPasswordBVisibility] = useState(true);
     const [rightIcon,setRightIcon] = useState('eye-slash');
@@ -23,7 +25,48 @@ export default function LoginScreen({navigation}){
     //     navigation.navigate('register')
     // }
     const login = ()=>{
-        ToastAndroid.show('Login Successfully',ToastAndroid.SHORT);
+        setAnimating(true);
+        let passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+		let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if(passwordRegex.test(password)){
+            if(emailRegex.test(email)){
+                loginUser(email,password);
+            }else{
+                console.log('Please enter valid email id');
+            }
+            
+
+        }else{
+           
+            if(emailRegex.test(email)){
+                if(passwordRegex.test(password)){
+                    loginUser(email,password)
+                }
+            }else{
+                console.log('Please provide valid password.')
+            }
+        }
+        // ToastAndroid.show('Login Successfully',ToastAndroid.SHORT);
+    }
+
+    const loginUser = (emailId,PswdId)=>{
+       console.log('email '+emailId+" "+PswdId);
+        auth().signInWithEmailAndPassword(emailId,PswdId)
+        .then(()=>{
+            navigation.navigate('Home')
+            setAnimating(false);
+            ToastAndroid.show('Login successfully',ToastAndroid.SHORT);
+        })
+        .catch(error=>{
+            setAnimating(false);
+            if(error.code==='auth/email-already-in-use'){
+                console.log('Already user exist');
+            }
+            if(error.code==='auth/invalid-email'){
+                console.log('Invalid user');
+            }
+            console.log(error);
+        });
     }
     return(
         <View style={styles.container}>
@@ -49,8 +92,7 @@ export default function LoginScreen({navigation}){
                 autoCapitalize="none"
                 onChangeText={(value)=>setUserName(value)}
                 autoCorrect={false}
-                textContentType='emailAddress'
-                />
+                textContentType='emailAddress'/>
             </View>
             <Text style={[styles.text_footer,{marginTop:20}]}>Password*</Text>
             <View style={styles.action}>
@@ -108,7 +150,11 @@ export default function LoginScreen({navigation}){
             </View>
             </ScrollView>
             </Animatable.View>
-           
+           <ActivityIndicator
+           animating={animating}
+           color='white'
+           size='large'
+           style={styles.activityIndiactor} />
         </View>
        
     );
@@ -179,5 +225,9 @@ const styles = StyleSheet.create({
     button:{
         alignItems:'center',
         marginTop:50,
+    },
+    activityIndiactor:{
+        alignItems:'center',
+        height:80,
     }
 });

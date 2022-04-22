@@ -1,4 +1,5 @@
 import React from "react";
+import Home from "../main/Home";
 import LoginScreen from "../accounts/LoginScreen";
 import SignupScreen from "../accounts/SignupScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -15,6 +16,10 @@ export default function AppAuth(){
                 <Stack.Screen
                 name='register'
                 component={SignupScreen}
+                options={{headerShown:false}}/>
+                <Stack.Screen
+                name='Home'
+                component={Home}
                 options={{headerShown:false}}/>
             </Stack.Navigator>
     );

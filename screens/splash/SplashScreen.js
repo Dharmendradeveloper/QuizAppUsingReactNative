@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from "react";
-import {View,StyleSheet,Text,Image,ActivityIndicator} from 'react-native';
+import {StatusBar,View,StyleSheet,Text,Image,ActivityIndicator} from 'react-native';
 
 export default function SplashScreen({navigation}){
-    const[animating,setAnimating] = useState(true);
+    const[animating,setAnimating] = useState(false);
     useEffect(()=>{
         setTimeout(()=>{
             navigation.replace(animating?'Home':'Auth')
@@ -12,6 +12,7 @@ export default function SplashScreen({navigation}){
 
     return(
         <View style={styles.container}>
+            <StatusBar backgroundColor='#009387'/>
             <Image
             style={styles.image}
             source={require('./../../images/avisys.jpg')}
@@ -30,13 +31,14 @@ export default function SplashScreen({navigation}){
 const styles = StyleSheet.create({
 container:{
     flex:1,
-    backgroundColor:'white',
+    backgroundColor:'#009387',
     justifyContent:'center',
     alignItems:'center'
 },
 image:{
     height:150,
     width:150,
+    borderRadius:4,
 },
 text:{
     fontSize:30,
